@@ -36,32 +36,32 @@ class TodoController extends Controller
         return view('todos.edit', compact('todo'));
     }
 
-public function update(Request $request, Todo $todo)
-{
-    $rules = [
-        'completed' => 'sometimes|boolean'
-    ];
-    
-    // Only require title if it's being updated
-    if ($request->has('title')) {
-        $rules['title'] = 'required|max:255';
-        $rules['description'] = 'nullable';
+    public function update(Request $request, Todo $todo)
+    {
+        $rules = [
+            'completed' => 'sometimes|boolean'
+        ];
+        
+        // Only require title if it's being updated
+        if ($request->has('title')) {
+            $rules['title'] = 'required|max:255';
+            $rules['description'] = 'nullable';
+        }
+
+        $validated = $request->validate($rules);
+
+        $todo->update($validated);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'completed' => $todo->completed
+            ]);
+        }
+
+        return redirect()->route('todos.index')
+            ->with('success', 'Task updated successfully!');
     }
-
-    $validated = $request->validate($rules);
-
-    $todo->update($validated);
-
-    if ($request->wantsJson()) {
-        return response()->json([
-            'success' => true,
-            'completed' => $todo->completed
-        ]);
-    }
-
-    return redirect()->route('todos.index')
-        ->with('success', 'Task updated successfully!');
-}
 
     public function destroy(Todo $todo)
     {
@@ -72,21 +72,21 @@ public function update(Request $request, Todo $todo)
     }
 
     public function toggle(Request $request, Todo $todo)
-{
-    try {
-        $newState = !$todo->completed;
-        $todo->update(['completed' => $newState]);
-        
-        return response()->json([
-            'success' => true,
-            'completed' => $newState
-        ]);
-        
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => $e->getMessage()
-        ], 500);
+    {
+        try {
+            $newState = !$todo->completed;
+            $todo->update(['completed' => $newState]);
+            
+            return response()->json([
+                'success' => true,
+                'completed' => $newState
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
-}
 }

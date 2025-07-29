@@ -71,44 +71,44 @@
             });
         });
 
-       function toggleTodo(todoId) {
-    const checkbox = document.getElementById(`checkbox-${todoId}`);
-    const title = document.getElementById(`title-${todoId}`);
-    const isCompleted = checkbox.checked;
+        function toggleTodo(todoId) {
+            const checkbox = document.getElementById(`checkbox-${todoId}`);
+            const title = document.getElementById(`title-${todoId}`);
+            const isCompleted = checkbox.checked;
 
-    // Immediately update UI
-    checkbox.disabled = true;  // Prevent multiple clicks
-    title.classList.toggle('completed', isCompleted);
+            // Immediately update UI
+            checkbox.disabled = true;  // Prevent multiple clicks
+            title.classList.toggle('completed', isCompleted);
 
-    // Send AJAX request
-    fetch(`/todos/${todoId}/toggle`, {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-            'Accept': 'application/json'
+            // Send AJAX request
+            fetch(`/todos/${todoId}/toggle`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(data => {
+                    if (!data.success) {
+                        // Revert if server reports failure
+                        checkbox.checked = !isCompleted;
+                        title.classList.toggle('completed', !isCompleted);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Revert on error
+                    checkbox.checked = !isCompleted;
+                    title.classList.toggle('completed', !isCompleted);
+                })
+                .finally(() => {
+                    checkbox.disabled = false;
+                });
         }
-    })
-    .then(response => {
-        if (!response.ok) throw new Error('Network response was not ok');
-        return response.json();
-    })
-    .then(data => {
-        if (!data.success) {
-            // Revert if server reports failure
-            checkbox.checked = !isCompleted;
-            title.classList.toggle('completed', !isCompleted);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        // Revert on error
-        checkbox.checked = !isCompleted;
-        title.classList.toggle('completed', !isCompleted);
-    })
-    .finally(() => {
-        checkbox.disabled = false;
-    });
-}
     </script>
 
     @if(session('success'))

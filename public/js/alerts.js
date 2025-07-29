@@ -36,7 +36,6 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.todo-checkbox input[type="checkbox"]').forEach(checkbox => {
         const todoId = checkbox.id.replace('checkbox-', '');
         const title = document.getElementById(`title-${todoId}`);
-        // Sync UI with server state
         title.classList.toggle('completed', checkbox.checked);
     });
 });

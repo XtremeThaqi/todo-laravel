@@ -8,5 +8,4 @@ Route::get('/', function () {
 });
 
 Route::resource('todos', TodoController::class);
-Route::post('/todos/{todo}/toggle', [TodoController::class, 'toggle'])
-    ->name('todos.toggle');
+Route::post('/todos/{todo}/toggle', [TodoController::class, 'toggle'])->name('todos.toggle');
