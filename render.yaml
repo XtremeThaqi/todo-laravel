@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: todo-laravel
+    env: php
+    plan: free
+    buildCommand: "composer install --no-dev --optimize-autoloader"
+    startCommand: "php artisan serve --host=0.0.0.0 --port=$PORT"
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_KEY
+        generateValue: true
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        value: your-neon-db-host
+      - key: DB_PORT
+        value: 5432
+      - key: DB_DATABASE
+        value: your-db-name
+      - key: DB_USERNAME
+        value: your-db-user
+      - key: DB_PASSWORD
+        value: your-db-password
